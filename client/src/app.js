@@ -19,19 +19,24 @@ class App extends Component {
           lookingIds = this.props.purchase.sids,
           actions = this.props.actions,
           seats = this.props.seats;
-
+    let message = '';
+    if (lookingIds.length) {
+      message = `You select seats: ${lookingIds.join(', ')}`;
+    } else {
+      message = 'You not yet select your seats.';
+    }
     return (
       <div>
-        <div>
-          <span>{`目前線上有: ${users}人`}</span>
+        <div className='strong-line'>
+          <span>{`Online Users: ${users}`}</span>
         </div>
         <SeatingChart actions={actions} seats={seats} lookingIds={lookingIds}></SeatingChart>
-        <div>
-          <span>{`您目前選擇的座位是 ${lookingIds.join(',')}`}</span>
+        <div className='strong-line'>
+          <span>{message}</span>
         </div>
         <div>
-          <button className='button' onClick={this.handleOnCancel}>取消</button>
-          <button className='button' onClick={this.handleOnSubmit}>確定</button>
+          <button className='button' onClick={this.handleOnCancel}>Cancel</button>
+          <button className='button button--danger' onClick={this.handleOnSubmit}>Submit</button>
         </div>
       </div>
     );

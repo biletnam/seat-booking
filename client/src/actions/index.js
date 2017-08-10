@@ -5,8 +5,10 @@ import { ws_events as wsEvents } from '../../../app.json';
 const socket = io('http://127.0.0.1:3000');
 
 export const looking = sid => (dispatch, getState) => {
-  socket.emit('looking', { uid: getState().purchase.uid, sid });
-  return dispatch({ type: types.LOOKING, payload: { sid } });
+  if (getState().purchase.sids.length < 4) {
+    socket.emit('looking', { uid: getState().purchase.uid, sid });
+    return dispatch({ type: types.LOOKING, payload: { sid } });
+  }
 };
 
 export const booking = () => (dispatch, getState) => {

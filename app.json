@@ -7,5 +7,6 @@
     "booking",
     "users_changed",
     "seats_changed"
-  ]
+  ],
+  "max_booking_seats": 4
 }
