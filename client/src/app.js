@@ -16,22 +16,22 @@ class App extends Component {
 
   render() {
     const users = this.props.space.users,
-          sids = this.props.purchase.sids,
-          action = this.props.action,
+          lookingIds = this.props.purchase.sids,
+          actions = this.props.actions,
           seats = this.props.seats;
 
     return (
       <div>
-        <SeatingChart actions={this.props.actions} seats={this.props.seats} selectedIds={sids}></SeatingChart>
         <div>
           <span>{`目前線上有: ${users}人`}</span>
         </div>
+        <SeatingChart actions={actions} seats={seats} lookingIds={lookingIds}></SeatingChart>
         <div>
-          <span>{`您目前選擇的座位是 ${sids.join(',')}`}</span>
+          <span>{`您目前選擇的座位是 ${lookingIds.join(',')}`}</span>
         </div>
         <div>
-          <button onClick={this.handleOnCancel}>取消</button>
-          <button onClick={this.handleOnSubmit}>確定</button>
+          <button className='button' onClick={this.handleOnCancel}>取消</button>
+          <button className='button' onClick={this.handleOnSubmit}>確定</button>
         </div>
       </div>
     );

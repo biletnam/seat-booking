@@ -5,7 +5,8 @@ for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
     seats.push({
       id: `${i}-${j}`,
-      status: 'opened'
+      lookingBy: [],
+      bookingBy: ''
     });
   }
 }
@@ -13,45 +14,52 @@ for (let i = 0; i < 10; i++) {
 let users = 0;
 
 const onBooking = (io, socket, data) => {
-  seats = seats.map(s => {
-    if (data.sids.indexOf(s.id) > -1) {
-      return { id: s.id, status: 'closed' };
+  seats = seats.map(seat => {
+    if (data.sids.indexOf(seat.id) > -1) {
+      return { id: seat.id, lookingBy: [], bookingBy: socket.id };
     } else {
-      return s;
+      return seat;
     }
   })
-  return io.sockets.emit('seatChange', seats);
+  return io.sockets.emit('seats_changed', seats);
 };
 
-const onSelect = (io, socket, data) => {
-  seats = seats.map(s => {
-    if (s.id === data.sid) {
-      return { id: s.id, status: 'select' };
-    } else {
-      return s;
+const onLooking = (io, socket, data) => {
+  seats = seats.map(seat => {
+    if (seat.id === data.sid) {
+      seat.lookingBy.push(socket.id);
     }
-  })
-  return io.sockets.emit('seatChange', seats);
+    return seat;
+  });
+  return io.sockets.emit('seats_changed', seats);
 };
 
 const onDisconnect = (io, socket, data) => {
   users--;
-  io.sockets.emit('userChange', users);
+  io.sockets.emit('users_changed', users);
+
+  seats.forEach(seat => {
+    const idx = seat.lookingBy.indexOf(socket.id);
+    if (idx > -1) {
+      seat.lookingBy.splice(idx, 1);
+    }
+  });
+  io.sockets.emit('seats_changed', seats);
 };
 
 const addEventListeners = (io, socket) => {
   users++;
 
   socket.on('booking', data => onBooking(io, socket, data));
-  socket.on('select', data => onSelect(io, socket, data));
+  socket.on('looking', data => onLooking(io, socket, data));
   socket.on('disconnect', () => onDisconnect(io, socket));
-  const d = {
-    uid: uuid(),
+  const space = {
+    uid: socket.id,
     users: users,
     seats: seats
   };
-  socket.emit('enter', d);
-  io.sockets.emit('userChange', users);
+  socket.emit('join_in', space);
+  io.sockets.emit('users_changed', users);
 };
 
 module.exports.init = io => {

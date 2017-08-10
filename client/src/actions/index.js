@@ -1,43 +1,29 @@
-import io from 'socket.io-client'
+import io from 'socket.io-client';
 import * as types from '../constants/action-type';
+import { ws_events as wsEvents } from '../../../app.json';
 
 const socket = io('http://127.0.0.1:3000');
 
-const onEnter = data => {
-  return {
-    type: types.ENTER,
-    payload: { ...data }
-  };
+export const looking = sid => (dispatch, getState) => {
+  socket.emit('looking', { uid: getState().purchase.uid, sid });
+  return dispatch({ type: types.LOOKING, payload: { sid } });
 };
 
-const onSeatChange = data => {
-  return {
-    type: types.ON_SEAT_CHANGE,
-    payload: { seats: data }
-  };
-};
-
-const onUserChange = data => {
-  return {
-    type: types.ON_USER_CHANGE,
-    payload: { users: data }
-  };
-};
-
-export const booking = sid => (dispatch, getState) => {
+export const booking = () => (dispatch, getState) => {
   socket.emit('booking', { ...getState().purchase });
+  return dispatch({ type: types.BOOKING });
 };
 
-export const select = sid => (dispatch, getState) => {
-  socket.emit('select', { uid: getState().purchase.uid, sid });
-  dispatch({
-    type: types.SELECT,
-    payload: { sid }
-  });
+const onEvent = (event, payload) => {
+  switch (event) {
+    case 'join_in'      : return { type: types.JOIN_IN, payload };
+    case 'users_changed': return { type: types.USERS_CHANGED, payload };
+    case 'seats_changed': return { type: types.SEATS_CHANGED, payload };
+  }
 };
 
 export const setupWebsocket = store => {
-  socket.on('enter', payload => store.dispatch(onEnter(payload)));
-  socket.on('seatChange', payload => store.dispatch(onSeatChange(payload)));
-  socket.on('userChange', payload => store.dispatch(onUserChange(payload)));
+  wsEvents.forEach(event => {
+    socket.on(event, payload => store.dispatch(onEvent(event, payload)));
+  });
 };

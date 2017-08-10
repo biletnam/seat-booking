@@ -4,12 +4,12 @@ import { Component, PropTypes } from 'react';
 export default class SeatingChart extends Component {
   handleClick = e => {
     const id = e.currentTarget.dataset.value;
-    this.props.actions.select(id);
+    this.props.actions.looking(id);
   }
 
   render() {
-    const seats = this.props.seats,
-          selectedIds = this.props.selectedIds,
+    const seats = this.props.seats || [],
+          lookingIds = this.props.lookingIds,
           sids = seats.map(s => s.id.split('-')),
           seatMap = [];
     sids.forEach((coordinate, i) => {
@@ -28,9 +28,9 @@ export default class SeatingChart extends Component {
                 return <span
                   key={cy.id}
                   className={classnames('seat', {
-                    'seat--selected': selectedIds.indexOf(cy.id) > -1,
-                    'seat--closed': cy.status === 'closed',
-                    'seat--other-focus': cy.status === 'select'
+                    'seat--looking': lookingIds.indexOf(cy.id) > -1,
+                    'seat--closed': cy.bookingBy,
+                    'seat--user-looking': cy.lookingBy.length > 0
                   })}
                   data-value={cy.id}
                   onClick={this.handleClick}

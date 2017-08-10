@@ -2,9 +2,9 @@ import * as types from '../constants/action-type';
 
 const purchase = (state = {uid: '', sids: []}, action) => {
   switch (action.type) {
-  case types.ENTER:
+  case types.JOIN_IN:
     return { uid: action.payload.uid, sids: [] };
-  case types.SELECT:
+  case types.LOOKING:
     return { ...state, sids: [...state.sids, action.payload.sid] };
   }
   return state;

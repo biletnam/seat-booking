@@ -1,14 +1,23 @@
 .seat
-  display: inline-block
+  display: inline-flex
+  justify-content: center
+  align-items: center
   size: 40px
-  background-color: #607d8b
   margin: .25rem
+  color: #333
+  border: 1px solid
+  border-radius: 3px
+  background-color: #fff
+  cursor: pointer
 
-.seat--other-focus
+.seat--user-looking
+  color: #fff
   background-color: #FFC107
 
 .seat--closed
+  color: #fff
   background-color: #9E9E9E
 
-.seat--selected
+.seat--looking
+  color: #fff
   background-color: #F44336

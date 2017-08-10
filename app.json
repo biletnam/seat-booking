@@ -1,0 +1,11 @@
+{
+  "ws_events": [
+    "connection",
+    "disconnect",
+    "join_in",
+    "looking",
+    "booking",
+    "users_changed",
+    "seats_changed"
+  ]
+}
