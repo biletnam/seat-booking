@@ -11,6 +11,11 @@ export const looking = sid => (dispatch, getState) => {
   }
 };
 
+export const unLooking = sid => (dispatch, getState) => {
+  socket.emit('un_looking', { uid: getState().purchase.uid, sid });
+  return dispatch({ type: types.UN_LOOKING, payload: { sid } });
+};
+
 export const booking = () => (dispatch, getState) => {
   socket.emit('booking', { ...getState().purchase });
   return dispatch({ type: types.BOOKING });

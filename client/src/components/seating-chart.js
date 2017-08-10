@@ -3,12 +3,18 @@ import { Component, PropTypes } from 'react';
 
 export default class SeatingChart extends Component {
   handleClick = e => {
-    const id = e.currentTarget.dataset.value;
-    this.props.actions.looking(id);
+    const id = e.currentTarget.dataset.value,
+          isLooking = this.props.lookingIds.find(item => item === id);
+
+    if (!isLooking) {
+      this.props.actions.looking(id);
+    } else {
+      this.props.actions.unLooking(id);
+    }
   }
 
   render() {
-    const seats = this.props.seats || [],
+    const seats = this.props.seats,
           lookingIds = this.props.lookingIds,
           sids = seats.map(s => s.id.split('-')),
           seatMap = [];

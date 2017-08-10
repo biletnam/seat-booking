@@ -4,6 +4,7 @@
     "disconnect",
     "join_in",
     "looking",
+    "un_looking",
     "booking",
     "users_changed",
     "seats_changed"

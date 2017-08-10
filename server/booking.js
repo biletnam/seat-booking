@@ -34,6 +34,17 @@ const onLooking = (io, socket, data) => {
   return io.sockets.emit('seats_changed', seats);
 };
 
+const onUnLooking = (io, socket, data) => {
+  seats = seats.map(seat => {
+    if (seat.id === data.sid) {
+      const idx = seat.lookingBy.indexOf(socket.id);
+      seat.lookingBy.splice(idx, 1);
+    }
+    return seat;
+  });
+  return io.sockets.emit('seats_changed', seats);
+};
+
 const onDisconnect = (io, socket, data) => {
   users--;
   io.sockets.emit('users_changed', users);
@@ -52,6 +63,7 @@ const addEventListeners = (io, socket) => {
 
   socket.on('booking', data => onBooking(io, socket, data));
   socket.on('looking', data => onLooking(io, socket, data));
+  socket.on('un_looking', data => onUnLooking(io, socket, data));
   socket.on('disconnect', () => onDisconnect(io, socket));
   const space = {
     uid: socket.id,

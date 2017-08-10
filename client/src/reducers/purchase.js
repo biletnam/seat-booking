@@ -6,6 +6,8 @@ const purchase = (state = {uid: '', sids: []}, action) => {
     return { uid: action.payload.uid, sids: [] };
   case types.LOOKING:
     return { ...state, sids: [...state.sids, action.payload.sid] };
+  case types.UN_LOOKING:
+    return { ...state, sids: state.sids.filter(item => item !== action.payload.sid) };
   }
   return state;
 };
